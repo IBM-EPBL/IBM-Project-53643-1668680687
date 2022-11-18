@@ -1,0 +1,117 @@
+               
+          in[4]: import numpy as пр
+                 import pandas as pd
+
+          in[5]: #Reading The Dataset
+
+                 datas = pd.read_csv(r"C:\Users\sunda\Desktop\IBM\car performance.csv")
+                 datas.head()
+
+      out [5]:     mpg    cylinders	displacement	horsepower	weight	acceleration	model year   origin	car name
+        
+               0    18.o       8          307.0           130            3504     12.0           70             1     chevrolet chevelle malibu
+
+               1    15.0       8          350.0           165            3693     11.5           70             1     buick skylark 320
+
+               2    18.0       8          318.0           150            3436     11.0           70             1     plymouth satelite
+    
+               3    16.0       8          304.0           150            3433     12.0           70             1     amc rebel sst
+
+               4    17.0       8          302.0           140            3449     10.5           70             1     ford torino
+ 
+         in[6]:  # Handling Missing Values
+
+                 datas.isnull().any()
+
+        out[6]:  mpg             False
+                 cylinders       False
+                 displacement    False
+                 horsepower      False
+                 weight          False
+                 acceleration    False
+                 model year      False
+                 origin          False
+                 car name        False
+                 dtype: bool
+
+         in[7]: # Splitting The Dataset Into Dependent And Independent Variable.
+
+                x = datas.iloc[:,1:8].values
+
+         in[8]: y = datas.iloc[:,0].values
+
+         in[9]:  # Split The Dataset Into Train Set And Test Set
+
+                 from sklearn.model_selection import train_test_split
+                 x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.2,random_state=0)
+
+         in[10]:  # Normalizing
+
+                 from sklearn.preprocessing import StandardScaler
+                 sd = StandardScaler()
+                 x_train = sd.fit_transform(x_train)
+                 x_test = sd.fit_transform(x_test)
+
+         in[11]:  x_train
+
+        out[11]:  array([[ 1.49526939,  1.22961301,  1.24359144, ..., -0.79520768,
+                  -1.13752513, -0.73301171],
+                  [-0.85285735, -0.92367663, -1.16092059, ...,  1.24411524,
+                  -1.41177304,  0.5068698 ],
+                  [-0.85285735, -0.92367663, -0.68001818, ...,  0.05760009,
+                  1.05645814,  0.5068698 ],
+                  ...,
+                  [-0.85285735, -1.206235  , -1.45480539, ...,  1.42950823,
+                  -0.86327722,  0.5068698 ],
+                  [ 0.32120602,  0.56706235, -0.09224857, ..., -0.2390287 ,
+                  -1.41177304, -0.73301171],
+                  [-0.85285735, -0.99188037, -0.86703579, ...,  0.31715028,
+                  -0.31478141,  0.5068698 ]])
+
+           in[12]:  # Build The Model With The Random Forest Regressor
+
+                    from sklearn.ensemble import RandomForestRegressor
+                    d = RandomForestRegressor (n_estimators=30,random_state = 0)
+                    d.fit(x_train,y_train)
+
+          out[12]:  RandomForestRegressor(n_estimators=30, random_state=0)
+
+           in[13]: # prediction
+
+                   y_pred = d.predict(x_test)
+                   y_pred
+
+          out[13]: array([14.38333333, 24.25666667, 14.21666667, 20.56666667, 18.47333333,
+                          30.21666667, 34.63333333, 21.15      , 16.30333333, 25.76      ,
+                          36.60333333, 36.27      , 19.53666667, 27.32333333, 16.54333333,
+                          32.99333333, 28.32333333, 27.49666667, 17.03      , 35.82      ,
+                          16.47333333, 23.54      , 23.16666667, 20.7       , 33.69666667,
+                          26.45      , 33.79666667, 30.37333333, 31.93666667, 16.57333333,
+                          20.26666667, 32.99      , 19.79666667, 34.08333333, 20.85666667,
+                          25.02      , 19.65333333, 17.14      , 34.78333333, 12.76666667,
+                          13.73333333, 15.2       , 28.32      , 32.76666667, 28.74333333,
+                          22.68666667, 20.54333333, 16.50666667, 23.38      , 29.88333333,
+                          34.31666667, 26.5       , 17.63      , 27.78333333, 15.96666667,
+                          12.96666667, 18.86666667, 26.91666667, 31.95666667, 15.68      ,
+                          20.81      , 25.97      , 19.84666667, 21.6       , 13.46666667,
+                          15.33333333, 14.2       , 18.90333333, 24.72666667, 14.21666667,
+                          34.87666667, 13.25      , 22.96666667, 18.77666667, 23.83333333,
+                          32.16666667, 28.17666667, 31.23666667, 31.94      , 14.35      ])   
+
+             
+            in[14]:  # Model Evaluation
+
+                     from sklearn.metrics import r2_score
+                     accuracy = r2_score(y_test,y_pred)
+                     accuracy
+
+           out[15]:  0.8914224071232417
+
+            in[17]:  # save the model
+
+                     import pickle
+                     pickle.dump(d,open('regression.pkl','wb'))
+            
+              
+           
+           
